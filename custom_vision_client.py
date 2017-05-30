@@ -7,36 +7,10 @@ from os.path import splitext
 import requests
 
 from exceptions import TrainingError
-
-
-Tag = namedtuple('Tag', [
-    'Description',
-    'Id',
-    'ImageCount',
-    'Name',
-])
-Project = namedtuple('Project', [
-    'Created',
-    'CurrentIterationId',
-    'Description',
-    'Id',
-    'LastModified',
-    'Name',
-    'Settings',
-    'ThumbnailUri',
-])
-TrainingResponse = namedtuple('TrainingResponse', [
-    'Id',
-    'Name',
-    'Status',
-    'Created',
-    'LastModified',
-    'IsDefault',
-])
-AddImageResponse = namedtuple('AddImageResponse', [
-    'IsBatchSuccessful',
-    'Images',
-])
+from models import AddImageResponse
+from models import Project
+from models import Tag
+from models import TrainingResponse
 
 
 class VisionServiceConfig(object):
