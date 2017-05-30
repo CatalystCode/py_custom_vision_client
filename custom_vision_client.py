@@ -5,7 +5,6 @@ from os.path import splitext
 from os import environ
 import requests
 
-
 Tag = namedtuple('Tag', [
     'Description',
     'Id',
@@ -38,8 +37,8 @@ AddImageResponse = namedtuple('AddImageResponse', [
 
 class TrainingError(Exception):
     def __init__(self, status, message):
-       self.message = message
-       self.status = status
+        self.message = message
+        self.status = status
 
     def __str__(self):
         return ' '.join(_ for _ in (self.status, self.message) if _)
@@ -64,8 +63,8 @@ class VisionServiceConfig(object):
 def _fetch_projects(config):
     headers = {'Training-Key': config.training_key}
     url = ('https://{region}.api.cognitive.microsoft.com/customvision/v1.0'
-	       '/Training/projects'
-		   .format(region=config.region))
+           '/Training/projects'
+           .format(region=config.region))
     json_response = requests.get(url, headers=headers).json()
     return [Project(**_) for _ in json_response]
 
@@ -73,9 +72,9 @@ def _fetch_projects(config):
 def _fetch_project_tags(config):
     headers = {'Training-Key': config.training_key}
     url = ('https://{region}.api.cognitive.microsoft.com/customvision/v1.0'
-	       '/Training/projects/{project_id}/tags'
-		   .format(region=config.region,
-		           project_id=config.project_id))
+           '/Training/projects/{project_id}/tags'
+           .format(region=config.region,
+                   project_id=config.project_id))
     json_response = requests.get(url, headers=headers).json()['Tags']
     return [Tag(**_) for _ in json_response]
 
@@ -83,9 +82,9 @@ def _fetch_project_tags(config):
 def trigger_training(config):
     headers = {'Training-Key': config.training_key, 'Content-Length': '0'}
     url = ('https://{region}.api.cognitive.microsoft.com/customvision/v1.0'
-	       '/Training/projects/{project_id}/train'
-		   .format(region=config.region,
-		           project_id=config.project_id))
+           '/Training/projects/{project_id}/train'
+           .format(region=config.region,
+                   project_id=config.project_id))
     json_response = requests.post(url, headers=headers).json()
     try:
         return TrainingResponse(**json_response)
@@ -100,10 +99,10 @@ def add_training_image(config, image_path, *tag_names):
     tags = [all_tags[tag_name] for tag_name in tag_names]
     headers = {'Training-Key': config.training_key}
     url = ('https://{region}.api.cognitive.microsoft.com/customvision/v1.0'
-	       '/Training/projects/{project_id}/images/image?tagIds={tagIds}'
-		   .format(region=config.region,
-		           project_id=config.project_id,
-		           tagIds='&tagIds='.join(tag.Id for tag in tags)))
+           '/Training/projects/{project_id}/images/image?tagIds={tagIds}'
+           .format(region=config.region,
+                   project_id=config.project_id,
+                   tagIds='&tagIds='.join(tag.Id for tag in tags)))
     with open(image_path, 'rb') as fobj:
         filename = basename(image_path)
         extension = splitext(filename)[1]
