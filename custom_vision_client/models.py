@@ -6,6 +6,7 @@ Tag = namedtuple('Tag', [
     'ImageCount',
     'Name',
 ])
+
 Project = namedtuple('Project', [
     'Created',
     'CurrentIterationId',
@@ -16,6 +17,7 @@ Project = namedtuple('Project', [
     'Settings',
     'ThumbnailUri',
 ])
+
 TrainingResponse = namedtuple('TrainingResponse', [
     'Id',
     'Name',
@@ -24,6 +26,7 @@ TrainingResponse = namedtuple('TrainingResponse', [
     'LastModified',
     'IsDefault',
 ])
+
 AddImageResponse = namedtuple('AddImageResponse', [
     'IsBatchSuccessful',
     'Images',

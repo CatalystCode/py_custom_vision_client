@@ -1,4 +1,3 @@
-from collections import namedtuple
 from functools import lru_cache
 from os import environ
 from os.path import basename
@@ -15,9 +14,9 @@ from custom_vision_client.models import TrainingResponse
 
 class Config(object):
     def __init__(self, region=None, training_key=None, project_name=None):
-        self.region = region or environ['VISION_SERVICE_REGION']
-        self.training_key = training_key or environ['VISION_SERVICE_TRAINING_KEY']
-        self._project_name = project_name or environ['VISION_SERVICE_PROJECT_NAME']
+        self.region = region or environ['VISION_REGION']
+        self.training_key = training_key or environ['VISION_TRAINING_KEY']
+        self._project_name = project_name or environ['VISION_PROJECT_NAME']
 
     @lru_cache(maxsize=1)
     def _fetch_project(self):
