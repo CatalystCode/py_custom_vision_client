@@ -1,2 +1,2 @@
-from custom_vision_client.client import TrainingClient  # noqa
-from custom_vision_client.client import TrainingConfig  # noqa
+from custom_vision_client.training import TrainingClient  # noqa
+from custom_vision_client.training import TrainingConfig  # noqa
