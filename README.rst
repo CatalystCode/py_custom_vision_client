@@ -1,6 +1,9 @@
 .. image:: https://travis-ci.org/CatalystCode/py_custom_vision_client.svg?branch=master
   :target: https://travis-ci.org/CatalystCode/py_custom_vision_client
 
+.. image:: https://img.shields.io/pypi/v/custom_vision_client.svg
+  :target: https://pypi.python.org/pypi/custom_vision_client/
+
 py_custom_vision_client
 =======================
 
