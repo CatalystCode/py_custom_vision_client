@@ -31,3 +31,9 @@ AddImageResponse = namedtuple('AddImageResponse', [
     'IsBatchSuccessful',
     'Images',
 ])
+
+Prediction = namedtuple('Prediction', [
+    'TagId',
+    'Tag',
+    'Probability',
+])
