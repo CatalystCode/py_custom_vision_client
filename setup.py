@@ -11,12 +11,12 @@ packages = find_packages(exclude=['tests*'])
 
 setup(
     name='custom_vision_client',
-    version='0.0.1',
+    version='0.0.2',
     author='Clemens Wolff',
     author_email='clewolff@microsoft.com',
     packages=packages,
     url='https://github.com/CatalystCode/py_custom_vision_client',
-    license='LICENSE',
+    license='License :: OSI Approved :: MIT License',
     description='A client for the Microsoft Azure Custom Vision Service',
     long_description=long_description,
     include_package_data=True,
