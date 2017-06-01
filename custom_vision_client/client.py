@@ -10,6 +10,7 @@ from typing import Tuple
 import requests
 
 HttpFile = Dict[Text, Tuple[Text, FileIO, Text]]
+Header = Tuple[Text, Text]
 
 
 class BaseClient(object):
@@ -21,7 +22,7 @@ class BaseClient(object):
         return 'https://{region}.api.cognitive.microsoft.com'.format(
             region=self._region)
 
-    def _format_headers(self, kv: Iterable[Tuple[Text, Text]]) -> Dict[Text, Text]:
+    def _format_headers(self, kv: Iterable[Header]) -> Dict[Text, Text]:
         headers = {self._auth_keyname: self._key}
         for key, value in kv:
             headers[key] = value

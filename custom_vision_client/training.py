@@ -64,9 +64,9 @@ class TrainingClient(BaseClient):
         response = self._get_json(url)
         return [Tag(**_) for _ in response['Tags']]
 
-    def _fetch_tags_for_names(self, tag_names: Iterable[Text]) -> Iterable[Tag]:
+    def _fetch_tags_for_names(self, names: Iterable[Text]) -> Iterable[Tag]:
         all_tags = dict((tag.Name, tag) for tag in self._fetch_project_tags())
-        return [all_tags[tag_name] for tag_name in tag_names]
+        return [all_tags[name] for name in names]
 
     def create_tag(self, tag_name: Text) -> Tag:
         url = self._format_tag_endpoint(tag_name)
