@@ -59,12 +59,12 @@ class TrainingClient(object):
     def _format_training_endpoint(self) -> Text:
         return '{base}/train'.format(base=self._format_project_endpoint())
 
-    def _format_image_url(self, *tags: Tag) -> Text:
+    def _format_image_url(self, tags: Iterable[Tag]) -> Text:
         return '{base}/images/image?tagIds={tagIds}'.format(
             base=self._format_project_endpoint(),
             tagIds='&tagIds='.join(tag.Id for tag in tags))
 
-    def _format_headers(self, *kv: Tuple[Text, Text]) -> Dict[Text, Text]:
+    def _format_headers(self, kv: Iterable[Tuple[Text, Text]]) -> Dict[Text, Text]:
         headers = {'Training-Key': self._config.training_key}
         for key, value in kv:
             headers[key] = value
@@ -87,7 +87,7 @@ class TrainingClient(object):
         response = self._get_json(url)
         return [Tag(**_) for _ in response['Tags']]
 
-    def _fetch_tags_for_names(self, *tag_names: Text) -> Iterable[Tag]:
+    def _fetch_tags_for_names(self, tag_names: Iterable[Text]) -> Iterable[Tag]:
         all_tags = dict((tag.Name, tag) for tag in self._fetch_project_tags())
         return [all_tags[tag_name] for tag_name in tag_names]
 
@@ -98,7 +98,7 @@ class TrainingClient(object):
         return self._make_json_request('post', url, **kwargs)
 
     def _make_json_request(self, method: Text, url: Text, **kwargs) -> Dict:
-        kwargs['headers'] = self._format_headers(*kwargs.pop('headers', []))
+        kwargs['headers'] = self._format_headers(kwargs.get('headers', []))
         response = getattr(requests, method)(url, **kwargs)
         response.raise_for_status()
         return response.json()
@@ -110,14 +110,14 @@ class TrainingClient(object):
 
     def trigger_training(self) -> TrainingResponse:
         url = self._format_training_endpoint()
-        response = self._post_json(url, headers=('Content-Length', '0'))
+        response = self._post_json(url, headers=[('Content-Length', '0')])
         try:
             return TrainingResponse(**response)
         except TypeError:
             raise TrainingError.from_response(response)
 
     def add_training_image(self, image_path: Text, *tag_names: Text):
-        url = self._format_image_url(self._fetch_tags_for_names(*tag_names))
+        url = self._format_image_url(self._fetch_tags_for_names(tag_names))
         with open(image_path, 'rb') as fobj:
             response = self._post_json(url, files=self._format_file(fobj))
         return AddImageResponse(**response)
