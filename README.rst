@@ -37,3 +37,7 @@ Usage
   predictions = prediction_client.classify_image("cat.jpg", model_id)
   best_prediction = max(predictions, key=lambda _: _.Probability)
   print(best_prediction.Tag)
+
+  predictions = prediction_client.classify_image("http://pictures.com/dog.jpg", model_id)
+  best_prediction = max(predictions, key=lambda _: _.Probability)
+  print(best_prediction.Tag)
