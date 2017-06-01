@@ -16,6 +16,7 @@ Usage
   from custom_vision_client import TrainingClient, TrainingConfig
 
   training_client = TrainingClient(TrainingConfig("my-azure-region", "my-project-name", "my-training-key"))
+  project_id = training_client.fetch_project_id()
 
   training_client.create_tag("Cat")
   training_client.create_tag("Dog")
@@ -26,18 +27,12 @@ Usage
 
   model_id = training_client.trigger_training().Id
 
-  project_id = training_client.fetch_project_id()
-
   # then, use the model to predict:
 
   from custom_vision_client import PredictionClient, PredictionConfig
 
   prediction_client = PredictionClient(PredictionConfig("my-azure-region", project_id, "my-prediction-key"))
 
-  predictions = prediction_client.classify_image("cat.jpg", model_id)
-  best_prediction = max(predictions, key=lambda _: _.Probability)
-  print(best_prediction.Tag)
-
-  predictions = prediction_client.classify_image("http://pictures.com/dog.jpg", model_id)
+  predictions = prediction_client.classify_image("cat.jpg", model_id)  # could also be a url to a file
   best_prediction = max(predictions, key=lambda _: _.Probability)
   print(best_prediction.Tag)
