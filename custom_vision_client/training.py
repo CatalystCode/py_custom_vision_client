@@ -51,6 +51,11 @@ class TrainingClient(object):
     def _format_tags_endpoint(self) -> Text:
         return '{base}/tags'.format(base=self._format_project_endpoint())
 
+    def _format_tag_endpoint(self, tag_name: Text) -> Text:
+        return '{base}?name={tag_name}'.format(
+            base=self._format_tags_endpoint(),
+            tag_name=tag_name)
+
     def _format_training_endpoint(self) -> Text:
         return '{base}/train'.format(base=self._format_project_endpoint())
 
@@ -97,6 +102,11 @@ class TrainingClient(object):
         response = getattr(requests, method)(url, **kwargs)
         response.raise_for_status()
         return response.json()
+
+    def create_tag(self, tag_name: Text) -> Tag:
+        url = self._format_tag_endpoint(tag_name)
+        response = self._post_json(url)
+        return Tag(**response)
 
     def trigger_training(self) -> TrainingResponse:
         url = self._format_training_endpoint()

@@ -16,6 +16,9 @@ Usage
   config = TrainingConfig("my-azure-region", "my-project-name", "my-training-key")
   client = TrainingClient(config)
 
+  client.create_tag("Cat")
+  client.create_tag("Dog")
+
   client.add_training_image("kitten.jpg", "Cat")
   client.add_training_image("akita.png", "Dog")
   client.add_training_image("best-animal-pals.jpg", "Cat", "Dog")
