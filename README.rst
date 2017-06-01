@@ -11,9 +11,9 @@ Usage
 
 .. sourcecode :: py
 
-  from custom_vision_client import TrainingClient, TrainingConfig
+  from custom_vision_client import TrainingClient, Config
 
-  config = TrainingConfig("my-azure-region", "my-project-name", "my-training-key")
+  config = Config("my-azure-region", "my-project-name", "my-training-key")
   client = TrainingClient(config)
 
   client.create_tag("Cat")

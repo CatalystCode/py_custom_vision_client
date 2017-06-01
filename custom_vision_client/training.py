@@ -1,43 +1,33 @@
+from collections import namedtuple
 from functools import lru_cache
-from io import FileIO
-from os import environ
-from os.path import basename
-from os.path import splitext
-from typing import Dict
-from typing import Iterable
 from typing import Text
-from typing import Tuple
+from typing import Iterable
 
-import requests
-
+from custom_vision_client.client import BaseClient
 from custom_vision_client.exceptions import TrainingError
 from custom_vision_client.models import AddImageResponse
-from custom_vision_client.models import Project
 from custom_vision_client.models import Tag
+from custom_vision_client.models import Project
 from custom_vision_client.models import TrainingResponse
 
-HttpFile = Dict[Text, Tuple[Text, FileIO, Text]]
+TrainingConfig = namedtuple('TrainingConfig', [
+    'region',
+    'project_name',
+    'training_key',
+])
 
 
-class TrainingConfig(object):
-    def __init__(self, region=None, project_name=None, training_key=None):
-        self.region = region or environ['VISION_REGION']
-        self.project_name = project_name or environ['VISION_PROJECT_NAME']
-        self.training_key = training_key or environ['VISION_TRAINING_KEY']
+class TrainingClient(BaseClient):
+    _auth_keyname = 'Training-Key'
 
-
-class TrainingClient(object):
     def __init__(self, config: TrainingConfig):
-        self._config = config
+        super().__init__(config.region, config.training_key)
+        self._project_name = config.project_name
 
     @lru_cache(maxsize=1)
-    def _fetch_project_id(self) -> Text:
+    def fetch_project_id(self) -> Text:
         return next(project.Id for project in self._fetch_projects()
-                    if project.Name == self._config.project_name)
-
-    def _format_api_base(self) -> Text:
-        return 'https://{region}.api.cognitive.microsoft.com'.format(
-            region=self._config.region)
+                    if project.Name == self._project_name)
 
     def _format_projects_endpoint(self) -> Text:
         return '{base}/customvision/v1.0/Training/projects'.format(
@@ -46,7 +36,7 @@ class TrainingClient(object):
     def _format_project_endpoint(self) -> Text:
         return '{base}/{project_id}'.format(
             base=self._format_projects_endpoint(),
-            project_id=self._fetch_project_id())
+            project_id=self.fetch_project_id())
 
     def _format_tags_endpoint(self) -> Text:
         return '{base}/tags'.format(base=self._format_project_endpoint())
@@ -64,19 +54,6 @@ class TrainingClient(object):
             base=self._format_project_endpoint(),
             tagIds='&tagIds='.join(tag.Id for tag in tags))
 
-    def _format_headers(self, kv: Iterable[Tuple[Text, Text]]) -> Dict[Text, Text]:
-        headers = {'Training-Key': self._config.training_key}
-        for key, value in kv:
-            headers[key] = value
-        return headers
-
-    @classmethod
-    def _format_file(cls, fobj: FileIO) -> HttpFile:
-        filepath = fobj.name
-        filename = basename(filepath)
-        extension = splitext(filename)[1]
-        return {'file': (filename, fobj, 'application/{}'.format(extension))}
-
     def _fetch_projects(self) -> Iterable[Project]:
         url = self._format_projects_endpoint()
         response = self._get_json(url)
@@ -90,18 +67,6 @@ class TrainingClient(object):
     def _fetch_tags_for_names(self, tag_names: Iterable[Text]) -> Iterable[Tag]:
         all_tags = dict((tag.Name, tag) for tag in self._fetch_project_tags())
         return [all_tags[tag_name] for tag_name in tag_names]
-
-    def _get_json(self, url: Text, **kwargs) -> Dict:
-        return self._make_json_request('get', url, **kwargs)
-
-    def _post_json(self, url: Text, **kwargs) -> Dict:
-        return self._make_json_request('post', url, **kwargs)
-
-    def _make_json_request(self, method: Text, url: Text, **kwargs) -> Dict:
-        kwargs['headers'] = self._format_headers(kwargs.get('headers', []))
-        response = getattr(requests, method)(url, **kwargs)
-        response.raise_for_status()
-        return response.json()
 
     def create_tag(self, tag_name: Text) -> Tag:
         url = self._format_tag_endpoint(tag_name)
