@@ -33,6 +33,16 @@ class TrainingClient(BaseClient):
         return '{base}/customvision/v1.0/Training/projects'.format(
             base=self._format_api_base())
 
+    def _format_new_project_endpoint(self, project_name: Text) -> Text:
+        query = (('name', project_name),
+                 ('description', ''),
+                 ('classifier', 'MultiLabel'),
+                 ('useNegativeSet', 'true'))
+
+        return '{base}?{query}'.format(
+            base=self._format_projects_endpoint(),
+            query='&'.join('{}={}'.format(*kv) for kv in query))
+
     def _format_project_endpoint(self) -> Text:
         return '{base}/{project_id}'.format(
             base=self._format_projects_endpoint(),
@@ -67,6 +77,11 @@ class TrainingClient(BaseClient):
     def _fetch_tags_for_names(self, names: Iterable[Text]) -> Iterable[Tag]:
         all_tags = dict((tag.Name, tag) for tag in self._fetch_project_tags())
         return [all_tags[name] for name in names]
+
+    def create_project(self, project_name: Text) -> Project:
+        url = self._format_new_project_endpoint(project_name)
+        response = self._post_json(url, headers=[('Content-Length', '0')])
+        return Project(**response)
 
     def create_tag(self, tag_name: Text) -> Tag:
         url = self._format_tag_endpoint(tag_name)
