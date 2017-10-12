@@ -11,7 +11,7 @@ packages = find_packages(exclude=['tests*'])
 
 setup(
     name='custom_vision_client',
-    version='0.0.2',
+    version='0.0.3',
     author='Clemens Wolff',
     author_email='clewolff@microsoft.com',
     packages=packages,
