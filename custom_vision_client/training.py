@@ -6,9 +6,10 @@ from typing import Iterable
 from custom_vision_client.client import BaseClient
 from custom_vision_client.exceptions import TrainingError
 from custom_vision_client.models import AddImageResponse
-from custom_vision_client.models import Tag
 from custom_vision_client.models import Project
+from custom_vision_client.models import Tag
 from custom_vision_client.models import TrainingResponse
+from custom_vision_client.models import create
 
 TrainingConfig = namedtuple('TrainingConfig', [
     'region',
@@ -67,12 +68,12 @@ class TrainingClient(BaseClient):
     def _fetch_projects(self) -> Iterable[Project]:
         url = self._format_projects_endpoint()
         response = self._get_json(url)
-        return [Project(**_) for _ in response]
+        return [create(Project, _) for _ in response]
 
     def _fetch_project_tags(self) -> Iterable[Tag]:
         url = self._format_tags_endpoint()
         response = self._get_json(url)
-        return [Tag(**_) for _ in response['Tags']]
+        return [create(Tag, _) for _ in response['Tags']]
 
     def _fetch_tags_for_names(self, names: Iterable[Text]) -> Iterable[Tag]:
         all_tags = dict((tag.Name, tag) for tag in self._fetch_project_tags())
@@ -81,18 +82,18 @@ class TrainingClient(BaseClient):
     def create_project(self, project_name: Text) -> Project:
         url = self._format_new_project_endpoint(project_name)
         response = self._post_json(url, headers=[('Content-Length', '0')])
-        return Project(**response)
+        return create(Project, response)
 
     def create_tag(self, tag_name: Text) -> Tag:
         url = self._format_tag_endpoint(tag_name)
         response = self._post_json(url)
-        return Tag(**response)
+        return create(Tag, response)
 
     def trigger_training(self) -> TrainingResponse:
         url = self._format_training_endpoint()
         response = self._post_json(url, headers=[('Content-Length', '0')])
         try:
-            return TrainingResponse(**response)
+            return create(TrainingResponse, response)
         except TypeError:
             raise TrainingError.from_response(response)
 
@@ -100,4 +101,4 @@ class TrainingClient(BaseClient):
         url = self._format_image_url(self._fetch_tags_for_names(tag_names))
         with open(image_path, 'rb') as fobj:
             response = self._post_json(url, files=self._format_file(fobj))
-        return AddImageResponse(**response)
+        return create(AddImageResponse, response)

@@ -1,4 +1,6 @@
 from collections import namedtuple
+from typing import Dict
+from typing import Type
 
 Tag = namedtuple('Tag', [
     'Description',
@@ -40,3 +42,16 @@ Prediction = namedtuple('Prediction', [
     'Tag',
     'Probability',
 ])
+
+
+def create(namedtuple_class: Type[namedtuple], args: Dict) -> namedtuple:
+    # noinspection PyProtectedMember
+    fields = set(namedtuple_class._fields)
+
+    args = {k: v for (k, v) in args.items() if k in fields}
+
+    for field in fields:
+        if field not in args:
+            args[field] = None
+
+    return namedtuple_class(**args)

@@ -7,6 +7,7 @@ from typing import Text
 
 from custom_vision_client.client import BaseClient
 from custom_vision_client.models import Prediction
+from custom_vision_client.models import create
 
 PredictionConfig = namedtuple('PredictionConfig', [
     'region',
@@ -49,4 +50,4 @@ class PredictionClient(BaseClient):
             response = self._classify_local_image(image, model_id)
         else:
             response = self._classify_remote_image(image, model_id)
-        return [Prediction(**_) for _ in response['Predictions']]
+        return [create(Prediction, _) for _ in response['Predictions']]
