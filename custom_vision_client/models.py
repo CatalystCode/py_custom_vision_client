@@ -25,6 +25,9 @@ TrainingResponse = namedtuple('TrainingResponse', [
     'Created',
     'LastModified',
     'IsDefault',
+    'ProjectId',
+    'TrainedWithDomainId',
+    'Exportable',
 ])
 
 AddImageResponse = namedtuple('AddImageResponse', [
