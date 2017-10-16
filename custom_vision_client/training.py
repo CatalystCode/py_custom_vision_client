@@ -1,6 +1,7 @@
 from collections import namedtuple
-from typing import Text
 from typing import Iterable
+from typing import Text
+from typing import TypeVar
 
 from custom_vision_client.client import BaseClient
 from custom_vision_client.exceptions import TrainingError
@@ -10,14 +11,31 @@ from custom_vision_client.models import Tag
 from custom_vision_client.models import TrainingResponse
 from custom_vision_client.models import create
 
+T = TypeVar('T')
+
 TrainingConfig = namedtuple('TrainingConfig', [
     'region',
     'training_key',
 ])
 
 
+def _grouper(iterable: Iterable[T], group_size: int) -> Iterable[Iterable[T]]:
+    iterator = iter(iterable)
+    while True:
+        chunk = []
+        try:
+            for _ in range(group_size):
+                chunk.append(next(iterator))
+            yield chunk
+        except StopIteration:
+            if chunk:
+                yield chunk
+            break
+
+
 class TrainingClient(BaseClient):
     _auth_keyname = 'Training-Key'
+    _training_batch_size = 20
 
     def __init__(self, config: TrainingConfig):
         super().__init__(config.region, config.training_key)
@@ -94,11 +112,29 @@ class TrainingClient(BaseClient):
             raise TrainingError.from_response(response)
         return create(TrainingResponse, response)
 
-    def add_training_image(self, project_id: Text, image_path: Text,
-                           *tag_names: Text):
+    def _add_training_images(self, project_id: Text, tags: Iterable[Tag],
+                             image_paths: Iterable[Text]) -> dict:
+
+        url = self._format_image_url(project_id, tags)
+        fobjs = [open(image_path, 'rb') for image_path in image_paths]
+        try:
+            return self._post_json(url, files=self._format_files(*fobjs))
+        finally:
+            for fobj in fobjs:
+                fobj.close()
+
+    def add_training_images(self, project_id: Text,
+                            image_paths: Iterable[Text], *tag_names: Text):
+
+        is_batch_successful = True
+        images = []
 
         tags = self._fetch_tags_for_names(project_id, tag_names)
-        url = self._format_image_url(project_id, tags)
-        with open(image_path, 'rb') as fobj:
-            response = self._post_json(url, files=self._format_file(fobj))
-        return create(AddImageResponse, response)
+        for batch in _grouper(image_paths, self._training_batch_size):
+            response = self._add_training_images(project_id, tags, batch)
+
+            is_batch_successful |= response.get('IsBatchSuccessful', False)
+            images.extend(response.get('Images', []))
+
+        return AddImageResponse(IsBatchSuccessful=is_batch_successful,
+                                Images=images)

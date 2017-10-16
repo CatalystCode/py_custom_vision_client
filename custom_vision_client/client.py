@@ -4,12 +4,14 @@ from os.path import basename
 from os.path import splitext
 from typing import Dict
 from typing import Iterable
+from typing import List
 from typing import Text
 from typing import Tuple
 
 import requests
 
-HttpFile = Dict[Text, Tuple[Text, FileIO, Text]]
+HttpFileInfo = Tuple[Text, FileIO, Text]
+HttpFile = Tuple[Text, HttpFileInfo]
 Header = Tuple[Text, Text]
 
 
@@ -29,11 +31,14 @@ class BaseClient(object):
         return headers
 
     @classmethod
-    def _format_file(cls, fobj: FileIO) -> HttpFile:
-        filepath = fobj.name
-        filename = basename(filepath)
-        extension = splitext(filename)[1]
-        return {'file': (filename, fobj, 'application/{}'.format(extension))}
+    def _format_files(cls, *fobjs: FileIO) -> List[HttpFile]:
+        files = []
+        for fobj in fobjs:
+            filename = basename(fobj.name)
+            extension = splitext(filename)[1]
+            content_type = 'application/{}'.format(extension)
+            files.append(('file', (filename, fobj, content_type)))
+        return files
 
     def _get_json(self, url: Text, **kwargs) -> Dict:
         return self._make_json_request('get', url, **kwargs)

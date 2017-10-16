@@ -27,9 +27,9 @@ Usage
   training_client.create_tag(project_id, "Cat")
   training_client.create_tag(project_id, "Dog")
 
-  training_client.add_training_image(project_id, "kitten.jpg", "Cat")
-  training_client.add_training_image(project_id, "akita.png", "Dog")
-  training_client.add_training_image(project_id, "best-animal-pals.jpg", "Cat", "Dog")
+  training_client.add_training_images(project_id, ["kitten.jpg"], "Cat")
+  training_client.add_training_images(project_id, ["akita.png", "spitz.png"], "Dog")
+  training_client.add_training_images(project_id, ["best-animal-pals.jpg"], "Cat", "Dog")
 
   model_id = training_client.trigger_training(project_id).Id
 

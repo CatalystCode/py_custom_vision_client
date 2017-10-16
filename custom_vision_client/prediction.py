@@ -40,7 +40,7 @@ class PredictionClient(BaseClient):
     def _classify_local_image(self, image_path: Text, model_id: Text) -> Dict:
         url = self._format_prediction_endpoint('image', model_id)
         with open(image_path, 'rb') as fobj:
-            response = self._post_json(url, files=self._format_file(fobj))
+            response = self._post_json(url, files=self._format_files(fobj))
         return response
 
     def classify_image(self, image: Text, model_id: Optional[Text]=None)\
