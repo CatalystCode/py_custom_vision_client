@@ -92,10 +92,9 @@ class TrainingClient(BaseClient):
     def trigger_training(self) -> TrainingResponse:
         url = self._format_training_endpoint()
         response = self._post_json(url, headers=[('Content-Length', '0')])
-        try:
-            return create(TrainingResponse, response)
-        except TypeError:
+        if TrainingError.has_error(response):
             raise TrainingError.from_response(response)
+        return create(TrainingResponse, response)
 
     def add_training_image(self, image_path: Text, *tag_names: Text):
         url = self._format_image_url(self._fetch_tags_for_names(tag_names))

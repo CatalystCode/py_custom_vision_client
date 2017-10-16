@@ -11,6 +11,10 @@ class TrainingError(Exception):
         return ' '.join(_ for _ in (self.status, self.message) if _)
 
     @classmethod
+    def has_error(cls, response: Dict):
+        return 'statusCode' in response or 'Code' in response
+
+    @classmethod
     def from_response(cls, response: Dict):
         status = response.get('statusCode') or response.get('Code')
         message = response.get('message') or response.get('Message')
