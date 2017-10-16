@@ -43,8 +43,8 @@ class PredictionClient(BaseClient):
             response = self._post_json(url, files=self._format_files(fobj))
         return response
 
-    def classify_image(self, image: Text, model_id: Optional[Text]=None)\
-            -> List[Prediction]:
+    def classify_image(self, image: Text,
+                       model_id: Optional[Text]=None) -> List[Prediction]:
 
         if isfile(image):
             response = self._classify_local_image(image, model_id)
