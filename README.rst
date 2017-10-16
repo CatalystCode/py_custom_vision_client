@@ -18,23 +18,29 @@ Usage
 
   from custom_vision_client import TrainingClient, TrainingConfig
 
-  training_client = TrainingClient(TrainingConfig("my-azure-region", "my-project-name", "my-training-key"))
-  project_id = training_client.fetch_project_id()
+  azure_region = "southcentralus"
+  training_key = "my-training-key"  # from settings pane on customvision.ai
 
-  training_client.create_tag("Cat")
-  training_client.create_tag("Dog")
+  training_client = TrainingClient(TrainingConfig(azure_region, training_key))
+  project_id = training_client.create_project("my-project-name").Id
 
-  training_client.add_training_image("kitten.jpg", "Cat")
-  training_client.add_training_image("akita.png", "Dog")
-  training_client.add_training_image("best-animal-pals.jpg", "Cat", "Dog")
+  training_client.create_tag(project_id, "Cat")
+  training_client.create_tag(project_id, "Dog")
 
-  model_id = training_client.trigger_training().Id
+  training_client.add_training_image(project_id, "kitten.jpg", "Cat")
+  training_client.add_training_image(project_id, "akita.png", "Dog")
+  training_client.add_training_image(project_id, "best-animal-pals.jpg", "Cat", "Dog")
+
+  model_id = training_client.trigger_training(project_id).Id
 
   # then, use the model to predict:
 
   from custom_vision_client import PredictionClient, PredictionConfig
 
-  prediction_client = PredictionClient(PredictionConfig("my-azure-region", project_id, "my-prediction-key"))
+  azure_region = "southcentralus"
+  prediction_key = "my-prediction-key"  # from settings pane on customvision.ai
+
+  prediction_client = PredictionClient(PredictionConfig(azure_region, project_id, prediction_key))
 
   predictions = prediction_client.classify_image("cat.jpg", model_id)  # could also be a url to a file
   best_prediction = max(predictions, key=lambda _: _.Probability)
