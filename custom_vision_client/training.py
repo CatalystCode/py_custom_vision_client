@@ -35,7 +35,7 @@ def _grouper(iterable: Iterable[T], group_size: int) -> Iterable[Iterable[T]]:
 
 class TrainingClient(BaseClient):
     _auth_keyname = 'Training-Key'
-    _training_batch_size = 20
+    _training_batch_size = 50
 
     def __init__(self, config: TrainingConfig):
         super().__init__(config.region, config.training_key)
