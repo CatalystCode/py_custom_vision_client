@@ -45,3 +45,37 @@ Usage
   predictions = prediction_client.classify_image("cat.jpg", model_id)  # could also be a url to a file
   best_prediction = max(predictions, key=lambda _: _.Probability)
   print(best_prediction.Tag)
+
+Command-line interface
+``````````````````````
+
+You can also interact with the Custom Vision Service via a command-line interface:
+
+.. sourcecode :: sh
+
+  # first, train a model
+  python3 -m custom_vision_client.training \
+    --key="my-training-key" \
+    --projectname="my-project-name" \
+    --imagesroot="/path/to/images"
+
+  # then, use the model to predict:
+  python3 -m custom_vision_client.prediction \
+    --key="my-prediction-key" \
+    --projectid="my-project-id-from-training" \
+    --modelid="my-model-id-from-training" \
+    --image="path-or-url-to-image"
+
+The command-line interface assumes that your training images are organized in folders
+such that every folder contains all the training images for that label:
+
+.. sourcecode :: sh
+
+  /path/to/images
+  ├── label_one
+  │   ├── image_1.jpg
+  │   ├── image_2.png
+  │   └── image_3.png
+  └── label_two
+      ├── image_4.jpg
+      └── image_5.jpg

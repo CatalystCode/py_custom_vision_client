@@ -51,3 +51,29 @@ class PredictionClient(BaseClient):
         else:
             response = self._classify_remote_image(image, model_id)
         return [create(Prediction, _) for _ in response['Predictions']]
+
+
+def _cli():
+    from argparse import ArgumentParser
+    from json import dumps
+
+    parser = ArgumentParser()
+    parser.add_argument('--region', default='southcentralus')
+    parser.add_argument('--key', required=True)
+    parser.add_argument('--modelid')
+    parser.add_argument('--projectid', required=True)
+    parser.add_argument('--image', required=True)
+    args = parser.parse_args()
+
+    client = PredictionClient(PredictionConfig(
+        region=args.region,
+        project_id=args.projectid,
+        prediction_key=args.key))
+
+    predictions = client.classify_image(args.image, args.modelid)
+    best = max(predictions, key=lambda _: _.Probability)
+    print(dumps({'confidence': best.Probability, 'label': best.Tag}))
+
+
+if __name__ == '__main__':
+    _cli()

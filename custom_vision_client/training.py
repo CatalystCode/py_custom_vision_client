@@ -138,3 +138,40 @@ class TrainingClient(BaseClient):
 
         return AddImageResponse(IsBatchSuccessful=is_batch_successful,
                                 Images=images)
+
+
+def _cli():
+    from argparse import ArgumentParser
+    from glob import glob
+    from json import dumps
+    from os import listdir
+
+    parser = ArgumentParser()
+    parser.add_argument('--region', default='southcentralus')
+    parser.add_argument('--key', required=True)
+    parser.add_argument('--projectname', required=True)
+    parser.add_argument('--imagesroot', required=True)
+    parser.add_argument('--imagetypes', default='jpg,png')
+    args = parser.parse_args()
+
+    client = TrainingClient(TrainingConfig(
+        region=args.region,
+        training_key=args.key))
+
+    project_id = client.create_project(args.projectname).Id
+    for label in listdir(args.imagesroot):
+        images = []
+        for extension in args.imagetypes.split(','):
+            images.extend(glob(
+                '{}/{}/**/*.{}'.format(args.imagesroot, label, extension),
+                recursive=True))
+
+        client.create_tag(project_id, label)
+        client.add_training_images(project_id, images, label)
+
+    model_id = client.trigger_training(project_id).Id
+    print(dumps({'model_id': model_id, 'project_id': project_id}))
+
+
+if __name__ == '__main__':
+    _cli()
