@@ -1,5 +1,6 @@
 from collections import namedtuple
 from typing import Iterable
+from typing import Optional
 from typing import Text
 from typing import TypeVar
 
@@ -102,10 +103,15 @@ class TrainingClient(BaseClient):
         response = self._post_json(url, headers=[('Content-Length', '0')])
         return create(Project, response)
 
-    def create_tag(self, project_id: Text, tag_name: Text) -> Tag:
+    def create_tag(self, project_id: Text, tag_name: Text) -> Optional[Tag]:
         url = self._format_tag_endpoint(project_id, tag_name)
-        response = self._post_json(url)
-        return create(Tag, response)
+        try:
+            response = self._post_json(url)
+        except HTTPError:
+            # tag already exists
+            return None
+        else:
+            return create(Tag, response)
 
     def trigger_training(self, project_id: Text) -> TrainingResponse:
         url = self._format_training_endpoint(project_id)
