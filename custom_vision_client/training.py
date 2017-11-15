@@ -3,6 +3,8 @@ from typing import Iterable
 from typing import Text
 from typing import TypeVar
 
+from requests.exceptions import HTTPError
+
 from custom_vision_client.client import BaseClient
 from custom_vision_client.exceptions import TrainingError
 from custom_vision_client.models import AddImageResponse
@@ -107,7 +109,13 @@ class TrainingClient(BaseClient):
 
     def trigger_training(self, project_id: Text) -> TrainingResponse:
         url = self._format_training_endpoint(project_id)
-        response = self._post_json(url, headers=[('Content-Length', '0')])
+        try:
+            response = self._post_json(url, headers=[('Content-Length', '0')])
+        except HTTPError:
+            raise TrainingError(
+                'Unable to train.',
+                'Check that you have at least two tags in your project and '
+                'have associated at least 10 images to every tag')
         if TrainingError.has_error(response):
             raise TrainingError.from_response(response)
         return create(TrainingResponse, response)
