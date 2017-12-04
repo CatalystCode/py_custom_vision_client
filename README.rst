@@ -41,12 +41,12 @@ to register for the Custom Vision Service is an email address.
 Next, navigate to the settings pane:
 
 .. image:: docs/signup-step-2.png
-  :target: https://customvision.ai/
+  :target: https://customvision.ai/projects
 
 Now, copy the trainig key and prediction key:
 
 .. image:: docs/signup-step-3.png
-  :target: https://customvision.ai/
+  :target: https://customvision.ai/projects#/settings
 
 Usage
 `````
