@@ -31,7 +31,9 @@ Or alternatively you can get the latest version from source control:
 
 Next up, you'll need to create a Custom Vision Service account and credentials.
 
-First, log into the Custom Vision Service:
+First, log into the Custom Vision Service. If you don't already have an
+account, a wizard will guide you through the signup experience. All you need
+to register for the Custom Vision Service is an email address.
 
 .. image:: docs/signup-step-1.png
   :target: https://customvision.ai/
