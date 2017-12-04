@@ -9,6 +9,10 @@ py_custom_vision_client
 
 This repository contains a simple Python client for the `Custom Vision Service <https://azure.microsoft.com/en-us/services/cognitive-services/custom-vision-service/>`_.
 
+The Custom Vision Service is a tool for building custom image classification
+models leveraging the power of transfer learning without the need to
+administer a deep learning infrastructure.
+
 Usage
 `````
 
