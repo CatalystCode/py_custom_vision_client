@@ -35,17 +35,17 @@ First, log into the Custom Vision Service. If you don't already have an
 account, a wizard will guide you through the signup experience. All you need
 to register for the Custom Vision Service is an email address.
 
-.. image:: docs/signup-step-1.png
+.. image:: https://raw.githubusercontent.com/CatalystCode/py_custom_vision_client/7f6f46b01262babee8923aaaa215dd2f44957d84/docs/signup-step-1.png
   :target: https://customvision.ai/
 
 Next, navigate to the settings pane:
 
-.. image:: docs/signup-step-2.png
+.. image:: https://raw.githubusercontent.com/CatalystCode/py_custom_vision_client/7f6f46b01262babee8923aaaa215dd2f44957d84/docs/signup-step-2.png
   :target: https://customvision.ai/projects
 
 Now, copy the trainig key and prediction key:
 
-.. image:: docs/signup-step-3.png
+.. image:: https://raw.githubusercontent.com/CatalystCode/py_custom_vision_client/7f6f46b01262babee8923aaaa215dd2f44957d84/docs/signup-step-3.png
   :target: https://customvision.ai/projects#/settings
 
 Usage
