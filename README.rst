@@ -13,6 +13,22 @@ The Custom Vision Service is a tool for building custom image classification
 models leveraging the power of transfer learning without the need to
 administer a deep learning infrastructure.
 
+Setup
+`````
+
+You can install the library directly from PyPI:
+
+.. sourcecode :: sh
+
+  pip install custom_vision_client
+
+Or alternatively you can get the latest version from source control:
+
+.. sourcecode :: sh
+
+  git clone https://github.com/CatalystCode/py_custom_vision_client.git
+  cd py_custom_vision_client
+
 Usage
 `````
 
