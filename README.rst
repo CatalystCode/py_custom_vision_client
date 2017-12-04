@@ -29,6 +29,23 @@ Or alternatively you can get the latest version from source control:
   git clone https://github.com/CatalystCode/py_custom_vision_client.git
   cd py_custom_vision_client
 
+Next up, you'll need to create a Custom Vision Service account and credentials.
+
+First, log into the Custom Vision Service:
+
+.. image:: docs/signup-step-1.png
+  :target: https://customvision.ai/
+
+Next, navigate to the settings pane:
+
+.. image:: docs/signup-step-2.png
+  :target: https://customvision.ai/
+
+Now, copy the trainig key and prediction key:
+
+.. image:: docs/signup-step-3.png
+  :target: https://customvision.ai/
+
 Usage
 `````
 
