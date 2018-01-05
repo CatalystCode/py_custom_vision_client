@@ -11,7 +11,7 @@ This repository contains a simple Python client for the `Custom Vision Service <
 
 The Custom Vision Service is a tool for building custom image classification
 models leveraging the power of transfer learning without the need to
-administer a deep learning infrastructure.
+administer a deep learning infrastructure. `Case study <https://www.microsoft.com/developerblog/2017/12/05/comparing-transfer-learning-systems-custom-vision-service-vs-inception-vs-mobilenet/>`_.
 
 Setup
 `````
