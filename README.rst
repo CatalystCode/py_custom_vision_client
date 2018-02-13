@@ -1,3 +1,7 @@
+This project is deprecated since there is now an `official Python SDK <https://docs.microsoft.com/en-us/azure/cognitive-services/custom-vision-service/python-tutorial>`_ for the Custom Vision Service.
+
+----
+
 .. image:: https://travis-ci.org/CatalystCode/py_custom_vision_client.svg?branch=master
   :target: https://travis-ci.org/CatalystCode/py_custom_vision_client
 
